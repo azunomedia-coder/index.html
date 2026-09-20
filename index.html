@@ -840,8 +840,9 @@
                         </div>
 
                         <!-- Actual Interactive Form -->
-                        <form id="azuno-contact-form" onsubmit="handleFormSubmit(event)" novalidate class="space-y-6">
-                            
+<form action="https://api.web3forms.com/submit" method="POST" id="azuno-contact-form" class="space-y-6">
+  <input type="hidden" name="access_key" value="54cd713b-a662-4637-9648-bd858dc394c2">
+  <input type="hidden" name="subject" value="رسالة جديدة من موقع A ZUNO Media">                            
                             <!-- HONEYPOT ANTI-SPAM FIELD (Hidden from normal users) -->
                             <div class="honeypot-field" aria-hidden="true">
                                 <label for="website_url">Do not fill this field</label>
