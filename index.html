@@ -112,9 +112,17 @@
         .animate-modal {
             animation: fadeIn 0.25s ease-out forwards;
         }
+
+        .honeypot-field {
+            display: none !important;
+            visibility: hidden !important;
+        }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-brand-dark">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 left-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- Sticky Navigation Header -->
     <header class="sticky top-0 z-40 w-full border-b border-brand-border/60 glass-panel transition-all duration-200">
@@ -548,7 +556,7 @@
             </div>
         </section>
 
-        <!-- CONTACT SECTION WITH AJAX HANDLING -->
+        <!-- CONTACT SECTION -->
         <section id="contact" class="py-24 bg-brand-dark border-t border-brand-border/60 relative">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
@@ -557,14 +565,14 @@
                     <p class="text-brand-textMuted text-sm sm:text-base">سواء كنت راعياً، صانع محتوى، أو حابب تنضم لفرقنا، حابين نسمع منك.</p>
                 </div>
 
+                <!-- Web3Forms Direct Form without JS blockage -->
                 <div class="bg-brand-card p-8 sm:p-10 rounded-3xl border border-brand-border shadow-2xl">
-                    <!-- Alert response box -->
-                    <div id="form-response" class="hidden mb-6 p-4 rounded-xl text-center text-sm font-bold"></div>
-
-                    <form id="contactForm" class="space-y-6">
+                    <form action="https://api.web3forms.com/submit" method="POST" class="space-y-6">
+                        <!-- Access Key -->
                         <input type="hidden" name="access_key" value="cf254fcf-bcd4-4591-b706-0c57acc42be9">
-                        <input type="hidden" name="subject" value="رسالة جديدة من موقع A ZUNO Media">
-                        <input type="hidden" name="from_name" value="موقع A ZUNO Media">
+                        
+                        <!-- Redirect Back to Website Page -->
+                        <input type="hidden" name="redirect" value="https://azunomedia.com/#contact">
                         
                         <div class="grid sm:grid-cols-2 gap-6">
                             <div>
@@ -578,11 +586,19 @@
                         </div>
 
                         <div>
+                            <label for="subject" class="block text-sm font-semibold text-white mb-2">موضوع الرسالة</label>
+                            <input type="text" id="subject" name="subject" required placeholder="استفسار عن الشراكة / انضمام / اقتراح" class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white placeholder-brand-textMuted focus:outline-none focus:border-brand-accent transition-colors">
+                        </div>
+
+                        <div>
                             <label for="message" class="block text-sm font-semibold text-white mb-2">الرسالة</label>
                             <textarea id="message" name="message" rows="5" required placeholder="اكتب رسالتك هنا..." class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white placeholder-brand-textMuted focus:outline-none focus:border-brand-accent transition-colors resize-none"></textarea>
                         </div>
 
-                        <button type="submit" id="submitBtn" class="w-full py-4 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-bold text-base transition-all shadow-lg shadow-brand-accent/20 cursor-pointer">
+                        <!-- Honeypot for anti-spam -->
+                        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                        <button type="submit" class="w-full py-4 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-bold text-base transition-all shadow-lg shadow-brand-accent/20 cursor-pointer">
                             إرسال الرسالة
                         </button>
                     </form>
@@ -622,56 +638,8 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT FOR UI, MODAL & AJAX FORM -->
+    <!-- JAVASCRIPT FOR UI & MODAL -->
     <script>
-        // Form Handling via AJAX
-        const form = document.getElementById('contactForm');
-        const responseDiv = document.getElementById('form-response');
-        const submitBtn = document.getElementById('submitBtn');
-
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                submitBtn.disabled = true;
-                submitBtn.innerText = 'جاري الإرسال...';
-                responseDiv.classList.add('hidden');
-
-                const formData = new FormData(form);
-                const object = Object.fromEntries(formData);
-                const json = JSON.stringify(object);
-
-                fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: json
-                })
-                .then(async (response) => {
-                    let res = await response.json();
-                    if (response.status == 200) {
-                        responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-                        responseDiv.innerText = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت.';
-                        form.reset();
-                    } else {
-                        responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20';
-                        responseDiv.innerText = res.message || 'حدث خطأ، يرجى المحاولة مرة أخرى.';
-                    }
-                })
-                .catch(error => {
-                    responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20';
-                    responseDiv.innerText = 'تعذر الاتصال بالخادم، يرجى التأكد من اتصال الإنترنت.';
-                })
-                .then(function() {
-                    responseDiv.classList.remove('hidden');
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'إرسال الرسالة';
-                });
-            });
-        }
-
         // Mobile menu toggle
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
@@ -704,7 +672,7 @@
             'min-galaq': {
                 title: 'مين قالك؟',
                 category: 'Conversation • Opinions • Comedy',
-                tagline: '"اتنين أصحاب عندهم آراء مختلفة… وكل واحد داخل يثبت إن التاني غلط."',
+                tagline: '"اتنين أصحاب عندهوم آراء مختلفة… وكل واحد داخل يثبت إن التاني غلط."',
                 description: 'نقاشات طريفة وممتعة بين اتنين من الأصحاب يمتلكان وجهات نظر مختلفة حول مواضيع الحياة اليومية في إطار كوميدي خفيف.'
             },
             'ehkili': {
@@ -724,7 +692,7 @@
                 <h3 class="text-3xl font-black text-white mt-1 mb-3">${data.title}</h3>
                 <p class="text-brand-accent/90 italic font-medium text-sm mb-4">${data.tagline}</p>
                 <p class="text-brand-textMuted text-sm leading-relaxed mb-6">${data.description}</p>
-                <button onclick="closeShowModal()" class="w-full py-3 rounded-xl bg-brand-accent text-brand-dark font-bold text-sm hover:bg-brand-accentHover transition-colors">إغلاق</button>
+                <button onclick="closeShowModal()" class="w-full py-3 rounded-xl bg-brand-accent text-brand-dark font-bold text-sm">إغلاق</button>
             `;
             document.getElementById('modal-content').innerHTML = content;
             document.getElementById('show-modal').classList.remove('hidden');
