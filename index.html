@@ -12,7 +12,7 @@
     <meta property="og:description" content="نصنع محتوى يستاهل يتشاف. برامج أصلية، قصص حقيقية، وكيمياء طبيعية للجيل الجديد.">
     <meta property="og:site_name" content="A ZUNO Media">
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Cairo & Tajawal for Arabic typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -46,6 +46,10 @@
                     fontFamily: {
                         cairo: ['Cairo', 'sans-serif'],
                         tajawal: ['Tajawal', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 0 25px rgba(226, 167, 39, 0.18)',
+                        'card-glow': '0 10px 30px -10px rgba(0, 0, 0, 0.5)'
                     }
                 }
             }
@@ -60,15 +64,31 @@
             overflow-x: hidden;
         }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0B0D10; }
-        ::-webkit-scrollbar-thumb { background: #232B38; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #E2A727; }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0D10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232B38;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #E2A727;
+        }
 
+        /* Ambient Glow Effect */
         .ambient-glow {
             background: radial-gradient(circle at 50% 30%, rgba(226, 167, 39, 0.08) 0%, rgba(11, 13, 16, 0) 70%);
         }
 
+        .ambient-glow-2 {
+            background: radial-gradient(circle at 80% 70%, rgba(35, 43, 56, 0.4) 0%, rgba(11, 13, 16, 0) 60%);
+        }
+
+        /* Glassmorphism subtle overlay */
         .glass-panel {
             background: rgba(20, 24, 31, 0.75);
             backdrop-filter: blur(12px);
@@ -84,18 +104,23 @@
             box-shadow: 0 12px 30px -10px rgba(226, 167, 39, 0.15);
         }
 
+        /* Modal animation */
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.96); }
             to { opacity: 1; transform: scale(1); }
         }
-        .animate-modal { animation: fadeIn 0.25s ease-out forwards; }
+        .animate-modal {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-brand-dark">
 
     <!-- Sticky Navigation Header -->
-    <header class="sticky top-0 z-40 w-full border-b border-brand-border/60 glass-panel">
+    <header class="sticky top-0 z-40 w-full border-b border-brand-border/60 glass-panel transition-all duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
             <a href="#" class="flex items-center gap-3 group">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-accent to-amber-300 flex items-center justify-center text-brand-dark font-black text-xl shadow-lg shadow-brand-accent/20 group-hover:scale-105 transition-transform">
                     Z
@@ -110,37 +135,46 @@
                 </div>
             </a>
 
-            <!-- جميع الأقسام الكاملة في القائمة -->
+            <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-medium text-brand-textMuted">
                 <a href="#hero" class="hover:text-brand-accent transition-colors">الرئيسية</a>
                 <a href="#about" class="hover:text-brand-accent transition-colors">عن A ZUNO</a>
                 <a href="#shows" class="hover:text-brand-accent transition-colors">برامجنا</a>
-                <a href="#why-us" class="hover:text-brand-accent transition-colors">ليه A ZUNO؟</a>
+                <a href="#why-us" class="hover:text-brand-accent transition-colors font-semibold">ليه A ZUNO؟</a>
                 <a href="#studio" class="hover:text-brand-accent transition-colors">الاستوديو</a>
                 <a href="#partnerships" class="hover:text-brand-accent transition-colors">الشراكات</a>
                 <a href="#contact" class="hover:text-brand-accent transition-colors">تواصل معنا</a>
             </nav>
 
+            <!-- Primary Action Button -->
             <div class="hidden md:flex items-center gap-3">
-                <a href="#shows" class="px-5 py-2.5 rounded-xl bg-brand-accent text-brand-dark font-bold text-sm hover:bg-brand-accentHover transition-all">
+                <a href="#shows" class="px-5 py-2.5 rounded-xl bg-brand-accent text-brand-dark font-bold text-sm hover:bg-brand-accentHover transition-all shadow-md shadow-brand-accent/10 active:scale-95">
                     اكتشف برامجنا
                 </a>
             </div>
 
-            <button id="mobile-menu-btn" type="button" aria-label="فتح القائمة" class="md:hidden p-2 rounded-lg text-brand-textMuted hover:text-white">
+            <!-- Mobile Hamburger Button -->
+            <button id="mobile-menu-btn" type="button" aria-label="فتح القائمة" class="md:hidden p-2 rounded-lg text-brand-textMuted hover:text-white hover:bg-brand-card focus:outline-none transition-colors">
                 <i class="fa-solid fa-bars text-2xl"></i>
             </button>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden border-t border-brand-border bg-brand-card/95 px-4 pt-3 pb-6">
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-brand-border bg-brand-card/95 backdrop-blur-xl px-4 pt-3 pb-6 transition-all">
             <nav class="flex flex-col gap-3 font-medium text-base text-brand-textMuted">
-                <a href="#hero" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated">الرئيسية</a>
-                <a href="#about" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated">عن A ZUNO Media</a>
-                <a href="#shows" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated">برامجنا</a>
-                <a href="#why-us" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated">ليه A ZUNO؟</a>
-                <a href="#studio" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated">الاستوديو</a>
-                <a href="#partnerships" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated">الشراكات</a>
-                <a href="#contact" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated">تواصل معنا</a>
+                <a href="#hero" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated hover:text-brand-accent">الرئيسية</a>
+                <a href="#about" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated hover:text-brand-accent">عن A ZUNO Media</a>
+                <a href="#shows" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated hover:text-brand-accent">برامجنا</a>
+                <a href="#why-us" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated hover:text-brand-accent">ليه A ZUNO Media؟</a>
+                <a href="#studio" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated hover:text-brand-accent">الاستوديو</a>
+                <a href="#partnerships" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated hover:text-brand-accent">الشراكات</a>
+                <a href="#contact" class="mobile-link py-2 px-3 rounded-lg hover:bg-brand-elevated hover:text-brand-accent">تواصل معنا</a>
+                
+                <div class="pt-2">
+                    <a href="#shows" class="mobile-link block w-full text-center py-3 rounded-xl bg-brand-accent text-brand-dark font-bold text-sm">
+                        اكتشف برامجنا
+                    </a>
+                </div>
             </nav>
         </div>
     </header>
@@ -148,145 +182,383 @@
     <main class="flex-grow">
         <!-- HERO SECTION -->
         <section id="hero" class="relative pt-16 pb-20 md:pt-28 md:pb-32 overflow-hidden ambient-glow">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-elevated border border-brand-border text-brand-accent text-xs sm:text-sm font-semibold mb-8">
-                    <span class="w-2 h-2 rounded-full bg-brand-accent animate-ping"></span>
-                    Digital Entertainment • Original Shows
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-4xl mx-auto">
+                    
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-elevated border border-brand-border text-brand-accent text-xs sm:text-sm font-semibold mb-8 shadow-inner">
+                        <span class="w-2 h-2 rounded-full bg-brand-accent animate-ping"></span>
+                        Digital Entertainment • Original Shows • Real Stories
+                    </div>
+
+                    <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-tight mb-6">
+                        نصنع محتوى <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent via-amber-200 to-brand-accent">يستاهل يتشاف.</span>
+                    </h1>
+
+                    <p class="text-lg sm:text-xl text-brand-textMuted font-medium leading-relaxed mb-10 max-w-3xl mx-auto">
+                        من برامج الكوميديا والقعدة بين الصحاب، إلى الألعاب والتحديات والقصص الحقيقية… <span class="text-white font-semibold">A ZUNO Media</span> بتقدم محتوى أصلي للجيل الجديد.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
+                        <a href="#shows" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-accent text-brand-dark font-bold text-base hover:bg-brand-accentHover transition-all shadow-lg shadow-brand-accent/20 flex items-center justify-center gap-3 group">
+                            <span>اكتشف برامجنا</span>
+                            <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#social" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-elevated text-white font-semibold text-base hover:bg-brand-card border border-brand-border transition-all flex items-center justify-center gap-3">
+                            <i class="fa-brands fa-youtube text-red-500 text-lg"></i>
+                            <span>تابعنا على السوشيال ميديا</span>
+                        </a>
+                    </div>
                 </div>
 
-                <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-tight mb-6">
-                    نصنع محتوى <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent via-amber-200 to-brand-accent">يستاهل يتشاف.</span>
-                </h1>
-
-                <p class="text-lg sm:text-xl text-brand-textMuted font-medium leading-relaxed mb-10 max-w-3xl mx-auto">
-                    من برامج الكوميديا والقعدة بين الصحاب، إلى الألعاب والتحديات والقصص الحقيقية… <span class="text-white font-semibold">A ZUNO Media</span> بتقدم محتوى أصلي للجيل الجديد.
-                </p>
-
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a href="#shows" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-accent text-brand-dark font-bold text-base hover:bg-brand-accentHover transition-all shadow-lg shadow-brand-accent/20">
-                        اكتشف برامجنا
-                    </a>
-                    <a href="#contact" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-elevated border border-brand-border text-white font-bold text-base hover:bg-brand-border transition-all">
-                        تواصل مع الفريق
-                    </a>
+                <div class="mt-16 sm:mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                    <div class="p-4 rounded-2xl bg-brand-card/60 border border-brand-border/60 text-center backdrop-blur-sm">
+                        <div class="text-brand-accent mb-2 text-xl"><i class="fa-solid fa-comments"></i></div>
+                        <div class="text-white font-bold text-sm sm:text-base">استنى بس!</div>
+                        <div class="text-xs text-brand-textMuted mt-1">حكايات وقعدة صحاب</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-brand-card/60 border border-brand-border/60 text-center backdrop-blur-sm">
+                        <div class="text-amber-400 mb-2 text-xl"><i class="fa-solid fa-gamepad"></i></div>
+                        <div class="text-white font-bold text-sm sm:text-base">مين فينا؟</div>
+                        <div class="text-xs text-brand-textMuted mt-1">تحديات وألعاب</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-brand-card/60 border border-brand-border/60 text-center backdrop-blur-sm">
+                        <div class="text-emerald-400 mb-2 text-xl"><i class="fa-solid fa-lightbulb"></i></div>
+                        <div class="text-white font-bold text-sm sm:text-base">مين قالك؟</div>
+                        <div class="text-xs text-brand-textMuted mt-1">نقاشات وآراء</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-brand-card/60 border border-brand-border/60 text-center backdrop-blur-sm">
+                        <div class="text-sky-400 mb-2 text-xl"><i class="fa-solid fa-microphone text-lg"></i></div>
+                        <div class="text-white font-bold text-sm sm:text-base">احكيلي</div>
+                        <div class="text-xs text-brand-textMuted mt-1">قصص وتجارب إنسانية</div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- ABOUT SECTION -->
-        <section id="about" class="py-20 bg-brand-card/50 border-y border-brand-border/60">
+        <!-- ABOUT A ZUNO MEDIA -->
+        <section id="about" class="py-20 bg-brand-dark border-t border-brand-border/40 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <span class="text-brand-accent text-xs sm:text-sm font-bold uppercase mb-2 block">عن الشركة</span>
-                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-6">ترفيه رقمي بروح جديدة وكيمياء حقيقية</h2>
-                        <p class="text-brand-textMuted leading-relaxed mb-4">
-                            A ZUNO Media هي شركة إنتاج ترفيهي رقمي متخصصة في صناعة البرامج الأصلية الموجهة للجمهور العربي على منصات التواصل الاجتماعي واليوتيوب.
-                        </p>
-                        <p class="text-brand-textMuted leading-relaxed">
-                            نركز على الكيمياء العفوية بين مقدمي البرامج، والأفكار المبتكرة التي تمس حياة الجيل الجديد بأسلوب ممتع وجذاب.
+                
+                <div class="max-w-3xl mx-auto text-center mb-16">
+                    <span class="text-brand-accent text-sm font-bold tracking-widest uppercase mb-2 block">من نحن</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-6">إحنا مين؟</h2>
+                    
+                    <p class="text-lg text-brand-text text-justify sm:text-center leading-relaxed mb-4">
+                        <span class="text-brand-accent font-bold">A ZUNO Media</span> هي شركة محتوى وترفيه رقمي بتبني برامج وأفكار أصلية موجهة للجمهور العربي، وتركّز على المحتوى اللي يجمع بين الضحك، التفاعل، القصص الحقيقية، الألعاب، التحديات والحوارات الطبيعية.
+                    </p>
+                    <p class="text-base text-brand-textMuted text-justify sm:text-center leading-relaxed">
+                        هدفنا مش مجرد إنتاج فيديوهات، لكن بناء برامج وشخصيات ومجتمعات تقدر تعيش على YouTube وTikTok وInstagram وباقي المنصات.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-8 rounded-2xl bg-brand-card border border-brand-border hover:border-brand-accent/40 transition-all">
+                        <div class="w-14 h-14 rounded-xl bg-brand-elevated text-brand-accent flex items-center justify-center text-2xl mb-6 shadow-inner">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">محتوى أصلي</h3>
+                        <p class="text-brand-textMuted text-sm leading-relaxed">
+                            أفكار وبرامج مصممة من البداية لجمهورنا العربي، نابعة من واقعه وثقافته واهتماماته اليومية.
                         </p>
                     </div>
-                    <div class="bg-brand-elevated border border-brand-border rounded-3xl p-8 flex flex-col justify-center items-center text-center">
-                        <i class="fa-solid fa-film text-5xl text-brand-accent mb-4"></i>
-                        <h3 class="text-xl font-bold text-white mb-2">رؤيتنا</h3>
-                        <p class="text-brand-textMuted text-sm">أن نكون الوجهة الأولى للمحتوى الترفيهي الأصلي الأكثر تأثيراً ومتابعة في الوطن العربي.</p>
+
+                    <div class="p-8 rounded-2xl bg-brand-card border border-brand-border hover:border-brand-accent/40 transition-all">
+                        <div class="w-14 h-14 rounded-xl bg-brand-elevated text-brand-accent flex items-center justify-center text-2xl mb-6 shadow-inner">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">شخصيات حقيقية</h3>
+                        <p class="text-brand-textMuted text-sm leading-relaxed">
+                            كيمياء طبيعية وشخصيات لها حضورها الخاص بعيدًا عن التكلف أو السيناريوهات المصنوعة.
+                        </p>
+                    </div>
+
+                    <div class="p-8 rounded-2xl bg-brand-card border border-brand-border hover:border-brand-accent/40 transition-all">
+                        <div class="w-14 h-14 rounded-xl bg-brand-elevated text-brand-accent flex items-center justify-center text-2xl mb-6 shadow-inner">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">محتوى متعدد المنصات</h3>
+                        <p class="text-brand-textMuted text-sm leading-relaxed">
+                            الحلقة الواحدة تتحول لمنظومة محتوى كاملة متكاملة تناسب طبيعة مختلف منصات التواصل الاجتماعي.
+                        </p>
                     </div>
                 </div>
+
             </div>
         </section>
 
         <!-- OUR SHOWS SECTION -->
-        <section id="shows" class="py-24 bg-brand-dark">
+        <section id="shows" class="py-24 bg-brand-dark relative ambient-glow-2">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
                 <div class="text-center max-w-3xl mx-auto mb-16">
-                    <span class="text-brand-accent text-xs sm:text-sm font-bold uppercase mb-2 block">إنتاجات A ZUNO Media</span>
+                    <span class="text-brand-accent text-xs sm:text-sm font-bold tracking-widest uppercase mb-2 block">إنتاجات A ZUNO Media</span>
                     <h2 class="text-3xl sm:text-5xl font-extrabold text-white mb-4">برامجنا الأصلية</h2>
+                    <p class="text-lg text-brand-textMuted font-medium">كل برنامج له شخصيته… وكل شخصية لها حكاية.</p>
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-8">
-                    <!-- SHOW 1 -->
-                    <div class="p-8 rounded-3xl bg-brand-card border border-brand-border show-card-hover flex flex-col justify-between">
+                    
+                    <!-- SHOW 1: استنى بس! -->
+                    <div class="p-8 rounded-3xl bg-brand-card border border-brand-border show-card-hover flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-brand-accent"></div>
+                        
                         <div>
-                            <span class="text-xs text-brand-accent font-bold uppercase">Comedy • Entertainment</span>
-                            <h3 class="text-3xl font-black text-white my-2">استنى بس!</h3>
-                            <p class="text-brand-textMuted text-sm leading-relaxed mb-6">3 أصحاب قاعدين في استوديو مريح، بيحكوا مواقف وقصص حقيقية حصلت معاهم بأسلوب عفوي وكوميدي.</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="px-3 py-1 rounded-full bg-brand-elevated text-brand-accent text-xs font-bold border border-brand-border">
+                                    Comedy • Entertainment • Friends
+                                </span>
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">
+                                    قريبًا
+                                </span>
+                            </div>
+
+                            <span class="text-xs text-brand-textMuted font-semibold tracking-wider block mb-1">A ZUNO Media يقدم</span>
+                            <h3 class="text-3xl font-black text-white mb-3 group-hover:text-brand-accent transition-colors">استنى بس!</h3>
+                            
+                            <p class="text-brand-text font-medium text-sm mb-4 italic text-amber-200/90">
+                                "إحنا أصحاب قاعدين نتكلم عادي… بس الكاميرات شغالة."
+                            </p>
+
+                            <p class="text-brand-textMuted text-sm leading-relaxed mb-6">
+                                3 أصحاب (وأحيانًا 4) قاعدين في استوديو مريح، بيحكوا مواقف وقصص حقيقية حصلت معاهم. كل ما حد يفتكر موقف مشابه يدخل في الكلام، في مزيج عَفوي بين الكوميديا، الألعاب، والتحديات.
+                            </p>
+
+                            <div class="space-y-2 mb-8 bg-brand-elevated/50 p-4 rounded-xl border border-brand-border/40 text-xs">
+                                <div class="flex items-start gap-2 text-brand-text">
+                                    <strong class="text-white shrink-0">الفورمات:</strong>
+                                    <span>3–4 أصحاب في قعدة استوديو مريحة وشاشات وتفاعلات تلقائية.</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-brand-text">
+                                    <strong class="text-white shrink-0">ما يميزه:</strong>
+                                    <span>الكيمياء الحقيقية بين أصحاب بجد، والضحك العفوي اللي ناتج عن مواقف واقعية.</span>
+                                </div>
+                            </div>
                         </div>
-                        <button onclick="openShowModal('estanna')" class="w-full py-3 rounded-xl bg-brand-elevated hover:bg-brand-accent hover:text-brand-dark text-white font-bold text-sm border border-brand-border transition-all">
-                            التفاصيل
+
+                        <button onclick="openShowModal('estanna')" class="w-full py-3 rounded-xl bg-brand-elevated hover:bg-brand-accent hover:text-brand-dark text-white font-bold text-sm border border-brand-border hover:border-transparent transition-all flex items-center justify-center gap-2">
+                            <span>اكتشف تفاصيل البرنامج</span>
+                            <i class="fa-solid fa-circle-info"></i>
                         </button>
                     </div>
 
-                    <!-- SHOW 2 -->
-                    <div class="p-8 rounded-3xl bg-brand-card border border-brand-border show-card-hover flex flex-col justify-between">
+                    <!-- SHOW 2: مين فينا؟ -->
+                    <div class="p-8 rounded-3xl bg-brand-card border border-brand-border show-card-hover flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-yellow-300"></div>
+
                         <div>
-                            <span class="text-xs text-amber-300 font-bold uppercase">Games • Challenges</span>
-                            <h3 class="text-3xl font-black text-white my-2">مين فينا؟</h3>
-                            <p class="text-brand-textMuted text-sm leading-relaxed mb-6">برنامج تنافسي ومرح قائم على ألعاب التخمين، الأسئلة السريعة، وتحديات ردود الفعل.</p>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="px-3 py-1 rounded-full bg-brand-elevated text-amber-300 text-xs font-bold border border-brand-border">
+                                    Games • Challenges • Comedy
+                                </span>
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">
+                                    قريبًا
+                                </span>
+                            </div>
+
+                            <span class="text-xs text-brand-textMuted font-semibold tracking-wider block mb-1">A ZUNO Media يقدم</span>
+                            <h3 class="text-3xl font-black text-white mb-3 group-hover:text-amber-300 transition-colors">مين فينا؟</h3>
+
+                            <p class="text-brand-text font-medium text-sm mb-4 italic text-amber-200/90">
+                                "مين يعرف صاحبه أكتر؟ مين الكذاب؟ ومين هيخسر في الآخر؟"
+                            </p>
+
+                            <p class="text-brand-textMuted text-sm leading-relaxed mb-6">
+                                برنامج تنافسي ومرح بين 2 لـ 3 مقدمين، قائم على ألعاب التخمين، الأسئلة السريعة، تحدي "ممنوع تضحك"، ومين الأكثر احتمالًا يعمل التصرف ده.
+                            </p>
+
+                            <div class="space-y-2 mb-8 bg-brand-elevated/50 p-4 rounded-xl border border-brand-border/40 text-xs">
+                                <div class="flex items-start gap-2 text-brand-text">
+                                    <strong class="text-white shrink-0">الفورمات:</strong>
+                                    <span>2–3 مقدمين ينافسون بعضهم في ألعاب وتحديات ردود فعل سريعة.</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-brand-text">
+                                    <strong class="text-white shrink-0">ما يميزه:</strong>
+                                    <span>المنافسة مش بس في اللعبة… المنافسة في إن كل واحد بيحاول يثبت إنه فاهم أصحابه أكتر.</span>
+                                </div>
+                            </div>
                         </div>
-                        <button onclick="openShowModal('min-fina')" class="w-full py-3 rounded-xl bg-brand-elevated hover:bg-brand-accent hover:text-brand-dark text-white font-bold text-sm border border-brand-border transition-all">
-                            التفاصيل
+
+                        <button onclick="openShowModal('min-fina')" class="w-full py-3 rounded-xl bg-brand-elevated hover:bg-brand-accent hover:text-brand-dark text-white font-bold text-sm border border-brand-border hover:border-transparent transition-all flex items-center justify-center gap-2">
+                            <span>اكتشف تفاصيل البرنامج</span>
+                            <i class="fa-solid fa-circle-info"></i>
                         </button>
                     </div>
+
+                    <!-- SHOW 3: مين قالك؟ -->
+                    <div class="p-8 rounded-3xl bg-brand-card border border-brand-border show-card-hover flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="px-3 py-1 rounded-full bg-brand-elevated text-emerald-400 text-xs font-bold border border-brand-border">
+                                    Conversation • Opinions • Comedy
+                                </span>
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">
+                                    قريبًا
+                                </span>
+                            </div>
+
+                            <span class="text-xs text-brand-textMuted font-semibold tracking-wider block mb-1">A ZUNO Media يقدم</span>
+                            <h3 class="text-3xl font-black text-white mb-3 group-hover:text-emerald-400 transition-colors">مين قالك؟</h3>
+
+                            <p class="text-brand-text font-medium text-sm mb-4 italic text-emerald-200/90">
+                                "اتنين أصحاب عندهم آراء مختلفة… وكل واحد داخل يثبت إن التاني غلط."
+                            </p>
+
+                            <p class="text-brand-textMuted text-sm leading-relaxed mb-6">
+                                نقاشات خفيفة وممتعة بين اتنين أصحاب حول مواضيع حياتية يومية (الشغل، الفلوس، العلاقات، السفر). مش مناظرة رسمية، لكن قعدة جدال وطرافة بعنوان "هات دليلك!".
+                            </p>
+
+                            <div class="space-y-2 mb-8 bg-brand-elevated/50 p-4 rounded-xl border border-brand-border/40 text-xs">
+                                <div class="flex items-start gap-2 text-brand-text">
+                                    <strong class="text-white shrink-0">الفورمات:</strong>
+                                    <span>2 مقدمين يتبادلون وجهات النظر في القضايا اليومية بروح كوميدية.</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-brand-text">
+                                    <strong class="text-white shrink-0">ما يميزه:</strong>
+                                    <span>اختلاف الرأي هنا مش مشكلة… ده أساس الحلقة وجوهر المتعة.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="openShowModal('min-galaq')" class="w-full py-3 rounded-xl bg-brand-elevated hover:bg-brand-accent hover:text-brand-dark text-white font-bold text-sm border border-brand-border hover:border-transparent transition-all flex items-center justify-center gap-2">
+                            <span>اكتشف تفاصيل البرنامج</span>
+                            <i class="fa-solid fa-circle-info"></i>
+                        </button>
+                    </div>
+
+                    <!-- SHOW 4: احكيلي -->
+                    <div class="p-8 rounded-3xl bg-brand-card border border-brand-border show-card-hover flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-500 to-blue-400"></div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="px-3 py-1 rounded-full bg-brand-elevated text-sky-400 text-xs font-bold border border-brand-border">
+                                    Stories • Human Experiences • Interviews
+                                </span>
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">
+                                    قريبًا
+                                </span>
+                            </div>
+
+                            <span class="text-xs text-brand-textMuted font-semibold tracking-wider block mb-1">A ZUNO Media يقدم</span>
+                            <h3 class="text-3xl font-black text-white mb-3 group-hover:text-sky-400 transition-colors">احكيلي</h3>
+
+                            <p class="text-brand-text font-medium text-sm mb-4 italic text-sky-200/90">
+                                "مش عايزين نعرف أنت مين بس… عايزين نعرف إيه اللي حصل لك."
+                            </p>
+
+                            <p class="text-brand-textMuted text-sm leading-relaxed mb-6">
+                                حوار إنساني دافئ بين مقدم وضيف صاحب تجربة استثنائية، رحلة تغيير كاريير، أو قصة نجاح/تحدي ملهمة. حوار تلقائي يبتعد عن الأسئلة التلفزيونية التقليدية.
+                            </p>
+
+                            <div class="space-y-2 mb-8 bg-brand-elevated/50 p-4 rounded-xl border border-brand-border/40 text-xs">
+                                <div class="flex items-start gap-2 text-brand-text">
+                                    <strong class="text-white shrink-0">الفورمات:</strong>
+                                    <span>مقدم 1 + ضيف 1 (صناع محتوى، رواد أعمال، مسافرون، أصحاب تجارب).</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-brand-text">
+                                    <strong class="text-white shrink-0">ما يميزه:</strong>
+                                    <span>التركيز مش على الأسئلة التقليدية، لكن على القصة نفسها والتأثير الإنساني.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="openShowModal('ehkili')" class="w-full py-3 rounded-xl bg-brand-elevated hover:bg-brand-accent hover:text-brand-dark text-white font-bold text-sm border border-brand-border hover:border-transparent transition-all flex items-center justify-center gap-2">
+                            <span>اكتشف تفاصيل البرنامج</span>
+                            <i class="fa-solid fa-circle-info"></i>
+                        </button>
+                    </div>
+
                 </div>
+
             </div>
         </section>
 
-        <!-- WHY US SECTION -->
-        <section id="why-us" class="py-20 bg-brand-card/30 border-t border-brand-border/60">
+        <!-- WHY A ZUNO MEDIA -->
+        <section id="why-us" class="py-20 bg-brand-card/40 border-y border-brand-border/60">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-3xl mx-auto mb-16">
-                    <span class="text-brand-accent text-xs sm:text-sm font-bold uppercase mb-2 block">لماذا نحن؟</span>
+                
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-brand-accent text-xs sm:text-sm font-bold tracking-widest uppercase mb-2 block">رؤيتنا وقيمنا</span>
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-white">ليه A ZUNO Media؟</h2>
                 </div>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="p-6 rounded-2xl bg-brand-card border border-brand-border text-center">
-                        <i class="fa-solid fa-bolt text-3xl text-brand-accent mb-4"></i>
-                        <h3 class="text-lg font-bold text-white mb-2">أفكار مبتكرة</h3>
-                        <p class="text-brand-textMuted text-sm">نبتعد عن النمطية ونقدم أفكاراً جديدة تناسب اهتمامات الشارع والشباب العربي.</p>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="p-6 rounded-2xl bg-brand-card border border-brand-border">
+                        <div class="text-brand-accent text-xs font-bold uppercase mb-1">Original Ideas</div>
+                        <h3 class="text-xl font-bold text-white mb-2">أفكار مجهزة بالتفصيل</h3>
+                        <p class="text-sm text-brand-textMuted">نبتكر كل برنامج بلهجة وهوية بصرية تناسب الجيل الجديد.</p>
                     </div>
-                    <div class="p-6 rounded-2xl bg-brand-card border border-brand-border text-center">
-                        <i class="fa-solid fa-[#E2A727] fa-video text-3xl text-brand-accent mb-4"></i>
-                        <h3 class="text-lg font-bold text-white mb-2">جودة إنتاج عالية</h3>
-                        <p class="text-brand-textMuted text-sm">استوديوهات ومعدات حديثة تضمن أعلى درجات الصوت والصورة سينمائياً.</p>
+                    <div class="p-6 rounded-2xl bg-brand-card border border-brand-border">
+                        <div class="text-amber-400 text-xs font-bold uppercase mb-1">Multi Platform</div>
+                        <h3 class="text-xl font-bold text-white mb-2">استراتيجية منصات متعددة</h3>
+                        <p class="text-sm text-brand-textMuted">تصميم المحتوى من البداية ليكون متوافقاً مع خوارزميات المنصات.</p>
                     </div>
-                    <div class="p-6 rounded-2xl bg-brand-card border border-brand-border text-center">
-                        <i class="fa-solid fa-users text-3xl text-brand-accent mb-4"></i>
-                        <h3 class="text-lg font-bold text-white mb-2">تفاعل حقيقي</h3>
-                        <p class="text-brand-textMuted text-sm">محتوى يلمس المتابع ويخلق حالة من المشاركة والتفاعل عبر مختلف المنصات.</p>
+                    <div class="p-6 rounded-2xl bg-brand-card border border-brand-border">
+                        <div class="text-emerald-400 text-xs font-bold uppercase mb-1">High Chemistry</div>
+                        <h3 class="text-xl font-bold text-white mb-2">تلقائية وكيمياء</h3>
+                        <p class="text-sm text-brand-textMuted">الاعتماد على الكيمياء التلقائية الحقيقية بين صناع المحتوى.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-brand-card border border-brand-border">
+                        <div class="text-sky-400 text-xs font-bold uppercase mb-1">Partnership Ready</div>
+                        <h3 class="text-xl font-bold text-white mb-2">شراكات تجارية</h3>
+                        <p class="text-sm text-brand-textMuted">دمج سلس وغير مزعج للعلامات التجارية والرعاة داخل البرامج.</p>
                     </div>
                 </div>
+
             </div>
         </section>
 
         <!-- STUDIO SECTION -->
         <section id="studio" class="py-20 bg-brand-dark">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <span class="text-brand-accent text-xs sm:text-sm font-bold uppercase mb-2 block">بيئة العمل</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-6">الاستوديو والتجهيزات</h2>
-                <p class="text-brand-textMuted max-w-2xl mx-auto mb-10">نملك بيئة إنتاجية متكاملة تشمل الاستوديوهات الصوتية والبصرية بأحدث التقنيات لإنتاج البرامج وصناعة المحتوى الترفيهي.</p>
+                <span class="text-brand-accent text-xs sm:text-sm font-bold tracking-widest uppercase mb-2 block">بيئة الإنتاج</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-6">استوديو A ZUNO</h2>
+                <p class="text-brand-textMuted max-w-2xl mx-auto mb-10 text-sm sm:text-base">
+                    تم تصميم استوديو الإنتاج بأحدث التقنيات البصرية والصوتية لضمان تقديم تجربة مشاهدة واحترافية عالية على أعلى مستوى.
+                </p>
+                <div class="p-8 rounded-3xl bg-brand-card border border-brand-border max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-around gap-6">
+                    <div>
+                        <div class="text-3xl font-black text-brand-accent">4K</div>
+                        <div class="text-xs text-brand-textMuted mt-1">جودة التصوير</div>
+                    </div>
+                    <div class="hidden md:block w-px h-12 bg-brand-border"></div>
+                    <div>
+                        <div class="text-3xl font-black text-amber-400">Multi-Cam</div>
+                        <div class="text-xs text-brand-textMuted mt-1">إعدادات متعددة الكاميرات</div>
+                    </div>
+                    <div class="hidden md:block w-px h-12 bg-brand-border"></div>
+                    <div>
+                        <div class="text-3xl font-black text-emerald-400">Pro Audio</div>
+                        <div class="text-xs text-brand-textMuted mt-1">هندسة صوتية احترافية</div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- PARTNERSHIPS SECTION -->
-        <section id="partnerships" class="py-20 bg-brand-card/50 border-t border-brand-border/60">
+        <section id="partnerships" class="py-20 bg-brand-card/30 border-t border-brand-border/40">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <span class="text-brand-accent text-xs sm:text-sm font-bold uppercase mb-2 block">الرعايات والشركاء</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-6">الشراكات والرعاية</h2>
-                <p class="text-brand-textMuted max-w-2xl mx-auto mb-8">نوفر للعلامات التجارية فرصة التواجد الطبيعي والذكي داخل برامجنا للحصول على أعلى معدلات الوصول والتفاعل.</p>
+                <span class="text-brand-accent text-xs sm:text-sm font-bold tracking-widest uppercase mb-2 block">الفرص والشراكات</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-6">ابنِ براندك معنا</h2>
+                <p class="text-brand-textMuted max-w-2xl mx-auto mb-8 text-sm sm:text-base">
+                    نقدم للشركات والعلامات التجارية فرصة الوصول إلى أجيال الشباب من خلال الرعاية والدمج الطبيعي داخل البرامج.
+                </p>
             </div>
         </section>
 
         <!-- CONTACT SECTION WITH AJAX HANDLING -->
-        <section id="contact" class="py-24 bg-brand-dark border-t border-brand-border/60">
+        <section id="contact" class="py-24 bg-brand-dark border-t border-brand-border/60 relative">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <span class="text-brand-accent text-xs sm:text-sm font-bold uppercase mb-2 block">تواصل معنا</span>
+                    <span class="text-brand-accent text-xs sm:text-sm font-bold tracking-widest uppercase mb-2 block">تواصل معنا</span>
                     <h2 class="text-3xl sm:text-5xl font-extrabold text-white mb-4">خلينا نتكلم!</h2>
                     <p class="text-brand-textMuted text-sm sm:text-base">سواء كنت راعياً، صانع محتوى، أو حابب تنضم لفرقنا، حابين نسمع منك.</p>
                 </div>
 
                 <div class="bg-brand-card p-8 sm:p-10 rounded-3xl border border-brand-border shadow-2xl">
+                    <!-- Alert response box -->
                     <div id="form-response" class="hidden mb-6 p-4 rounded-xl text-center text-sm font-bold"></div>
 
                     <form id="contactForm" class="space-y-6">
@@ -297,20 +569,20 @@
                         <div class="grid sm:grid-cols-2 gap-6">
                             <div>
                                 <label for="name" class="block text-sm font-semibold text-white mb-2">الاسم بالكامل</label>
-                                <input type="text" id="name" name="name" required placeholder="أدخل اسمك" class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white focus:outline-none focus:border-brand-accent">
+                                <input type="text" id="name" name="name" required placeholder="أدخل اسمك" class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white placeholder-brand-textMuted focus:outline-none focus:border-brand-accent transition-colors">
                             </div>
                             <div>
                                 <label for="email" class="block text-sm font-semibold text-white mb-2">البريد الإلكتروني</label>
-                                <input type="email" id="email" name="email" required placeholder="name@domain.com" class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white focus:outline-none focus:border-brand-accent">
+                                <input type="email" id="email" name="email" required placeholder="name@domain.com" class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white placeholder-brand-textMuted focus:outline-none focus:border-brand-accent transition-colors">
                             </div>
                         </div>
 
                         <div>
                             <label for="message" class="block text-sm font-semibold text-white mb-2">الرسالة</label>
-                            <textarea id="message" name="message" rows="5" required placeholder="اكتب رسالتك هنا..." class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white focus:outline-none focus:border-brand-accent resize-none"></textarea>
+                            <textarea id="message" name="message" rows="5" required placeholder="اكتب رسالتك هنا..." class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white placeholder-brand-textMuted focus:outline-none focus:border-brand-accent transition-colors resize-none"></textarea>
                         </div>
 
-                        <button type="submit" id="submitBtn" class="w-full py-4 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-bold text-base transition-all shadow-lg cursor-pointer">
+                        <button type="submit" id="submitBtn" class="w-full py-4 rounded-xl bg-brand-accent hover:bg-brand-accentHover text-brand-dark font-bold text-base transition-all shadow-lg shadow-brand-accent/20 cursor-pointer">
                             إرسال الرسالة
                         </button>
                     </form>
@@ -320,13 +592,29 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-brand-card border-t border-brand-border py-8 text-center text-xs text-brand-textMuted">
-        &copy; 2026 A ZUNO Media. جميع الحقوق محفوظة.
+    <footer id="social" class="bg-brand-card border-t border-brand-border py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-brand-accent flex items-center justify-center text-brand-dark font-black text-base">Z</div>
+                <span class="text-lg font-bold text-white">A ZUNO Media</span>
+            </div>
+
+            <div class="flex items-center gap-6 text-xl text-brand-textMuted">
+                <a href="#" class="hover:text-red-500 transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#" class="hover:text-pink-500 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-white transition-colors"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="#" class="hover:text-blue-500 transition-colors"><i class="fa-brands fa-facebook"></i></a>
+            </div>
+
+            <div class="text-xs text-brand-textMuted">
+                &copy; 2026 A ZUNO Media. جميع الحقوق محفوظة.
+            </div>
+        </div>
     </footer>
 
     <!-- SHOW DETAILS MODAL -->
     <div id="show-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div class="bg-brand-card border border-brand-border w-full max-w-2xl rounded-3xl p-6 sm:p-8 relative animate-modal">
+        <div class="bg-brand-card border border-brand-border w-full max-w-2xl rounded-3xl p-6 sm:p-8 relative animate-modal max-h-[90vh] overflow-y-auto">
             <button onclick="closeShowModal()" class="absolute top-5 left-5 text-brand-textMuted hover:text-white text-xl">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -334,65 +622,111 @@
         </div>
     </div>
 
+    <!-- JAVASCRIPT FOR UI, MODAL & AJAX FORM -->
     <script>
+        // Form Handling via AJAX
         const form = document.getElementById('contactForm');
         const responseDiv = document.getElementById('form-response');
         const submitBtn = document.getElementById('submitBtn');
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'جاري الإرسال...';
-            responseDiv.classList.add('hidden');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'جاري الإرسال...';
+                responseDiv.classList.add('hidden');
 
-            const formData = new FormData(form);
-            const object = Object.fromEntries(formData);
-            const json = JSON.stringify(object);
+                const formData = new FormData(form);
+                const object = Object.fromEntries(formData);
+                const json = JSON.stringify(object);
 
-            fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: json
-            })
-            .then(async (response) => {
-                let res = await response.json();
-                if (response.status == 200) {
-                    responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-                    responseDiv.innerText = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت.';
-                    form.reset();
-                } else {
+                fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: json
+                })
+                .then(async (response) => {
+                    let res = await response.json();
+                    if (response.status == 200) {
+                        responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+                        responseDiv.innerText = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت.';
+                        form.reset();
+                    } else {
+                        responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20';
+                        responseDiv.innerText = res.message || 'حدث خطأ، يرجى المحاولة مرة أخرى.';
+                    }
+                })
+                .catch(error => {
                     responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20';
-                    responseDiv.innerText = res.message || 'حدث خطأ، يرجى المحاولة مرة أخرى.';
-                }
-            })
-            .catch(error => {
-                responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20';
-                responseDiv.innerText = 'تعذر الاتصال بالخادم، يرجى التأكد من اتصال الإنترنت.';
-            })
-            .then(function() {
-                responseDiv.classList.remove('hidden');
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'إرسال الرسالة';
+                    responseDiv.innerText = 'تعذر الاتصال بالخادم، يرجى التأكد من اتصال الإنترنت.';
+                })
+                .then(function() {
+                    responseDiv.classList.remove('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'إرسال الرسالة';
+                });
             });
-        });
+        }
 
+        // Mobile menu toggle
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
         if (btn && menu) {
-            btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
         }
 
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (menu) menu.classList.add('hidden');
+            });
+        });
+
+        // Shows Data for Modal
+        const showsData = {
+            'estanna': {
+                title: 'استنى بس!',
+                category: 'Comedy • Entertainment • Friends',
+                tagline: '"إحنا أصحاب قاعدين نتكلم عادي… بس الكاميرات شغالة."',
+                description: 'برنامج حواري كوميدي خفيف يعتمد على الضحك والتفاعل القوي بين مجموعة من الأصحاب، واسترجاع المواقف اليومية والمواقف الطريفة من الحياة الواقعية.'
+            },
+            'min-fina': {
+                title: 'مين فينا؟',
+                category: 'Games • Challenges • Comedy',
+                tagline: '"مين يعرف صاحبه أكتر؟ مين الكذاب؟ ومين هيخسر في الآخر؟"',
+                description: 'برنامج تحديات وألعاب قائمة على ردود الفعل السريعة، واكتشاف أسرار الأصحاب ومعرفة من منهم الأكثر قدرة على الفوز.'
+            },
+            'min-galaq': {
+                title: 'مين قالك؟',
+                category: 'Conversation • Opinions • Comedy',
+                tagline: '"اتنين أصحاب عندهم آراء مختلفة… وكل واحد داخل يثبت إن التاني غلط."',
+                description: 'نقاشات طريفة وممتعة بين اتنين من الأصحاب يمتلكان وجهات نظر مختلفة حول مواضيع الحياة اليومية في إطار كوميدي خفيف.'
+            },
+            'ehkili': {
+                title: 'احكيلي',
+                category: 'Stories • Human Experiences • Interviews',
+                tagline: '"مش عايزين نعرف أنت مين بس… عايزين نعرف إيه اللي حصل لك."',
+                description: 'برنامج حواري إنساني يسلط الضوء على تجارب الحياة والقصص الملهِمة في رحلة التغيير والتحديات.'
+            }
+        };
+
         function openShowModal(showKey) {
-            const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = `
-                <h3 class="text-2xl font-bold text-white mb-2">تفاصيل البرنامج</h3>
-                <p class="text-brand-textMuted text-sm mb-6">يتم تجهيز باقي تفاصيل البرنامج للعرض قريباً.</p>
-                <button onclick="closeShowModal()" class="w-full py-3 rounded-xl bg-brand-accent text-brand-dark font-bold text-sm">إغلاق</button>
+            const data = showsData[showKey];
+            if (!data) return;
+
+            const content = `
+                <span class="text-xs text-brand-accent font-bold uppercase tracking-wider">${data.category}</span>
+                <h3 class="text-3xl font-black text-white mt-1 mb-3">${data.title}</h3>
+                <p class="text-brand-accent/90 italic font-medium text-sm mb-4">${data.tagline}</p>
+                <p class="text-brand-textMuted text-sm leading-relaxed mb-6">${data.description}</p>
+                <button onclick="closeShowModal()" class="w-full py-3 rounded-xl bg-brand-accent text-brand-dark font-bold text-sm hover:bg-brand-accentHover transition-colors">إغلاق</button>
             `;
+            document.getElementById('modal-content').innerHTML = content;
             document.getElementById('show-modal').classList.remove('hidden');
         }
 
