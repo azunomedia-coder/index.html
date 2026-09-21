@@ -114,9 +114,6 @@
                 <a href="#hero" class="hover:text-brand-accent transition-colors">الرئيسية</a>
                 <a href="#about" class="hover:text-brand-accent transition-colors">عن A ZUNO</a>
                 <a href="#shows" class="hover:text-brand-accent transition-colors">برامجنا</a>
-                <a href="#why-us" class="hover:text-brand-accent transition-colors">ليه A ZUNO؟</a>
-                <a href="#studio" class="hover:text-brand-accent transition-colors">الاستوديو</a>
-                <a href="#partnerships" class="hover:text-brand-accent transition-colors">الشراكات</a>
                 <a href="#contact" class="hover:text-brand-accent transition-colors">تواصل معنا</a>
             </nav>
 
@@ -202,7 +199,7 @@
             </div>
         </section>
 
-        <!-- CONTACT SECTION WITH AJAX HANDLING -->
+        <!-- CONTACT SECTION -->
         <section id="contact" class="py-24 bg-brand-dark border-t border-brand-border/60">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
@@ -216,7 +213,11 @@
                     <div id="form-response" class="hidden mb-6 p-4 rounded-xl text-center text-sm font-bold"></div>
 
                     <form id="contactForm" class="space-y-6">
-<input type="hidden" name="access_key" value="cf254fcf-bcd4-4591-b706-0c57acc42be9">                        
+                        <!-- المفتاح الجديد المربوط بحسابك مباشرة -->
+                        <input type="hidden" name="access_key" value="cf254fcf-bcd4-4591-b706-0c57acc42be9">
+                        <input type="hidden" name="subject" value="رسالة جديدة من موقع A ZUNO Media">
+                        <input type="hidden" name="from_name" value="موقع A ZUNO Media">
+                        
                         <div class="grid sm:grid-cols-2 gap-6">
                             <div>
                                 <label for="name" class="block text-sm font-semibold text-white mb-2">الاسم بالكامل</label>
@@ -226,11 +227,6 @@
                                 <label for="email" class="block text-sm font-semibold text-white mb-2">البريد الإلكتروني</label>
                                 <input type="email" id="email" name="email" required placeholder="name@domain.com" class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white focus:outline-none focus:border-brand-accent">
                             </div>
-                        </div>
-
-                        <div>
-                            <label for="subject" class="block text-sm font-semibold text-white mb-2">موضوع الرسالة</label>
-                            <input type="text" id="subject" name="subject" required placeholder="موضوع الاستفسار" class="w-full px-4 py-3 rounded-xl bg-brand-elevated border border-brand-border text-white focus:outline-none focus:border-brand-accent">
                         </div>
 
                         <div>
@@ -263,12 +259,12 @@
     </div>
 
     <script>
-        // Form Submission via Fetch API
+        // Form Submission JavaScript
         const form = document.getElementById('contactForm');
         const responseDiv = document.getElementById('form-response');
         const submitBtn = document.getElementById('submitBtn');
 
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             
             submitBtn.disabled = true;
@@ -276,40 +272,47 @@
             responseDiv.classList.add('hidden');
 
             const formData = new FormData(form);
-            
-            try {
-                const response = await fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
+            const object = Object.fromEntries(formData);
+            const json = JSON.stringify(object);
 
-                if (result.success) {
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: json
+            })
+            .then(async (response) => {
+                let res = await response.json();
+                if (response.status == 200) {
                     responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-                    responseDiv.innerText = 'تم إرسال رسالتك بنجاح! إذا كانت هذه أولي رسائلك، يرجى مراجعة مجلد الـ Spam بالبريد لتفعيل المفتاح.';
+                    responseDiv.innerText = 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت.';
                     form.reset();
                 } else {
                     responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20';
-                    responseDiv.innerText = 'حدث خطأ أثناء الإرسال: ' + (result.message || 'يرجى المحاولة لاحقاً');
+                    responseDiv.innerText = res.message || 'حدث خطأ، يرجى المحاولة مرة أخرى.';
                 }
-            } catch (error) {
+            })
+            .catch(error => {
                 responseDiv.className = 'mb-6 p-4 rounded-xl text-center text-sm font-bold bg-red-500/10 text-red-400 border border-red-500/20';
-                responseDiv.innerText = 'تعذر الاتصال بالخادم. يرجى التأكد من الاتصال بالإنترنت.';
-            } finally {
+                responseDiv.innerText = 'تعذر الاتصال بالخادم، يرجى التأكد من اتصال الإنترنت.';
+            })
+            .then(function() {
                 responseDiv.classList.remove('hidden');
                 submitBtn.disabled = false;
                 submitBtn.innerText = 'إرسال الرسالة';
-            }
+            });
         });
 
-        // Mobile Menu
+        // Mobile Menu Toggle
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
         if (btn && menu) {
             btn.addEventListener('click', () => menu.classList.toggle('hidden'));
         }
 
-        // Show Modal Controls
+        // Show Modal Logic
         function openShowModal(showKey) {
             const modalContent = document.getElementById('modal-content');
             modalContent.innerHTML = `
