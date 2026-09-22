@@ -426,7 +426,7 @@
                             <h3 class="text-3xl font-black text-white mb-3 group-hover:text-emerald-400 transition-colors">مين قالك؟</h3>
 
                             <p class="text-brand-text font-medium text-sm mb-4 italic text-emerald-200/90">
-                                "اتنين أصحاب عندهم آراء مختلفة… وكل واحد داخل يثبت إن التاني غلط."
+                                "اتنين أصحاب عنده آراء مختلفة… وكل واحد داخل يثبت إن التاني غلط."
                             </p>
 
                             <p class="text-brand-textMuted text-sm leading-relaxed mb-6">
@@ -1221,59 +1221,6 @@
                 isValid = false;
             }
 
-import requests
-
-
-def send_email_notification(name, email, subject, message):
-    # رابط الخدمة الخاص بـ Web3Forms
-    url = "https://api.web3forms.com/submit"
-
-    # تجهيز البيانات المراد إرسالها للبريد الإلكتروني
-    payload = {
-        "access_key": "cf254fcf-bcd4-4591-b706-0c57acc42be9",  # المفتاح الخاص بك
-        "subject": subject,  # عنوان الرسالة
-        "from_name": name,  # اسم المرسل
-        "email": email,  # بريد المرسل (لإمكانية الرد عليه)
-        "message": message,  # محتوى الرسالة
-    }
-
-    try:
-        # تنفيذ طلب الإرسال عبر HTTP POST
-        response = requests.post(url, json=payload)
-        res_data = response.json()
-
-        # التحقق من استجابة السيرفر
-        if response.status_code == 200 and res_data.get("success"):
-            print(" تم إرسال الرسالة بنجاح إلى البريد الإلكتروني!")
-            return True
-        else:
-            print(" فشل الإرسال:", res_data.get("message", response.text))
-            return False
-
-    except Exception as e:
-        print(f" حدث خطأ أثناء الاتصال: {e}")
-        return False
-
-
-# --- تجربة الكود وإرسال رسالة اختباريّة ---
-if __name__ == "__main__":
-    send_email_notification(
-        name="أحمد قاسم",
-        email="Ahmedqassemgalal@gmail.com",
-        subject="تنبيه جديد من كود Python",
-        message="هذه رسالة تجريبية لتأكيد ربط الكود بالبريد الإلكتروني بنجاح.",
-    )
-
-# سطر الإرسال الأساسي
-response = requests.post(url, json=payload)
-
-# للتحقق من وصول الرسالة بنجاح
-if response.status_code == 200:
-    print("تم إرسال الرسالة بنجاح!")
-else:
-    print("حدث خطأ أثناء الإرسال:", response.text)
-
-            
             if (!isValid) return;
 
             // Start Loading State
@@ -1281,7 +1228,7 @@ else:
             btnText.innerText = 'جاري الإرسال...';
             btnIcon.className = 'fa-solid fa-spinner fa-spin';
 
-            // Prepare Form Data payload for Formspree / Web3Forms or standard endpoint
+            // Prepare Form Data payload for Formspree endpoint
             const formData = {
                 name: nameInput.value.trim(),
                 email: emailInput.value.trim(),
@@ -1293,8 +1240,8 @@ else:
                 _replyto: emailInput.value.trim()
             };
 
-            // Attempt email dispatch via public form handler endpoint or API simulation with real fallback
-            fetch('https://formspree.io/f/azunomedia@gmail.com', {
+            // Send to Formspree using your specific endpoint key
+            fetch('https://formspree.io/f/cf254fcf-bcd4-4591-b706-0c57acc42be9', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1303,14 +1250,24 @@ else:
                 body: JSON.stringify(formData)
             })
             .then(response => {
-                lastSubmissionTime = Date.now();
-                showSuccessState();
+                if (response.ok) {
+                    lastSubmissionTime = Date.now();
+                    showSuccessState();
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            document.getElementById('error-message-text').innerText = data["errors"].map(error => error["message"]).join(", ");
+                        } else {
+                            document.getElementById('error-message-text').innerText = 'حصلت مشكلة أثناء إرسال الرسالة. من فضلك حاول تاني.';
+                        }
+                        errorBanner.classList.remove('hidden');
+                    });
+                }
             })
             .catch(error => {
-                // In production, fallback simulation allows seamless UX while logging
-                console.info('Contact dispatch simulation initialized for azunomedia@gmail.com');
-                lastSubmissionTime = Date.now();
-                showSuccessState();
+                console.error('Error sending form:', error);
+                document.getElementById('error-message-text').innerText = 'تعذر الاتصال بالخادم، يُرجى التأكد من الاتصال بالإنترنت والمحاولة مجددًا.';
+                errorBanner.classList.remove('hidden');
             })
             .finally(() => {
                 submitBtn.disabled = false;
