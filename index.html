@@ -1223,15 +1223,46 @@
 
 import requests
 
-# رابط الخدمة (Web3Forms API)
-url = "https://api.web3forms.com/submit"
 
-# البيانات المفتاحية للرسالة
-payload = {
-    "access_key": "cf254fcf-bcd4-4591-b706-0c57acc42be9",
-    "subject": "تنبيه جديد من الكود",
-    "message": "هنا نص الرسالة أو التنبيه المطلوب إرساله",
-}
+def send_email_notification(name, email, subject, message):
+    # رابط الخدمة الخاص بـ Web3Forms
+    url = "https://api.web3forms.com/submit"
+
+    # تجهيز البيانات المراد إرسالها للبريد الإلكتروني
+    payload = {
+        "access_key": "cf254fcf-bcd4-4591-b706-0c57acc42be9",  # المفتاح الخاص بك
+        "subject": subject,  # عنوان الرسالة
+        "from_name": name,  # اسم المرسل
+        "email": email,  # بريد المرسل (لإمكانية الرد عليه)
+        "message": message,  # محتوى الرسالة
+    }
+
+    try:
+        # تنفيذ طلب الإرسال عبر HTTP POST
+        response = requests.post(url, json=payload)
+        res_data = response.json()
+
+        # التحقق من استجابة السيرفر
+        if response.status_code == 200 and res_data.get("success"):
+            print(" تم إرسال الرسالة بنجاح إلى البريد الإلكتروني!")
+            return True
+        else:
+            print(" فشل الإرسال:", res_data.get("message", response.text))
+            return False
+
+    except Exception as e:
+        print(f" حدث خطأ أثناء الاتصال: {e}")
+        return False
+
+
+# --- تجربة الكود وإرسال رسالة اختباريّة ---
+if __name__ == "__main__":
+    send_email_notification(
+        name="أحمد قاسم",
+        email="Ahmedqassemgalal@gmail.com",
+        subject="تنبيه جديد من كود Python",
+        message="هذه رسالة تجريبية لتأكيد ربط الكود بالبريد الإلكتروني بنجاح.",
+    )
 
 # سطر الإرسال الأساسي
 response = requests.post(url, json=payload)
